@@ -1,8 +1,6 @@
 package dev.sterner.obscureapi.network;
 
-@EventBusSubscriber(
-		bus = Bus.MOD
-)
+
 public class PlayerDataCapability {
 	public static final Capability<PlayerData> OBS_DATA = CapabilityManager.get(new CapabilityToken<PlayerData>() {
 	});

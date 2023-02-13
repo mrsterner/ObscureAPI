@@ -1,34 +1,30 @@
 package dev.sterner.obscureapi.network;
 
-@EventBusSubscriber(
-		bus = Bus.MOD
-)
+
+import dev.sterner.obscureapi.ObscureAPI;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+import org.quiltmc.qsl.networking.api.PacketSender;
+import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
+
 public class ReloadMessage {
-	int type;
+	public static final Identifier ID = new Identifier(ObscureAPI.MODID, "reload_packet");
 
-	public ReloadMessage(int type) {
-		this.type = type;
+	public static void send(PlayerEntity player, int messageType) {
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		buf.writeInt(messageType);
+		ServerPlayNetworking.send((ServerPlayerEntity) player, ID, buf);
 	}
 
-	public ReloadMessage(FriendlyByteBuf buffer) {
-		this.type = buffer.readInt();
-	}
-
-	public static void buffer(ReloadMessage message, FriendlyByteBuf buffer) {
-		buffer.writeInt(message.type);
-	}
-
-	public static void handler(ReloadMessage message, Supplier<NetworkEvent.Context> context) {
-		((NetworkEvent.Context)context.get()).enqueueWork(() -> {
-			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
-				return ObscuriaCollection::reload;
-			});
+	public static void handle(MinecraftClient client, ClientPlayNetworkHandler network, PacketByteBuf buf, PacketSender sender) {
+		int messageType = buf.readInt();
+		client.execute(() -> {
+			ObscuriaCollection::reload;
 		});
-		((NetworkEvent.Context)context.get()).setPacketHandled(true);
-	}
-
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		ObscureAPI.addNetworkMessage(ReloadMessage.class, ReloadMessage::buffer, ReloadMessage::new, ReloadMessage::handler);
 	}
 }

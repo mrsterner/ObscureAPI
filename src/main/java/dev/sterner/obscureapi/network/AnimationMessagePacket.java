@@ -1,42 +1,39 @@
 package dev.sterner.obscureapi.network;
 
-@EventBusSubscriber(
-		bus = Bus.MOD
-)
+import dev.sterner.obscureapi.ObscureAPI;
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
+import org.quiltmc.qsl.networking.api.PacketSender;
+import org.quiltmc.qsl.networking.api.ServerPlayNetworking;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class AnimationMessagePacket {
-	public int entity;
-	public NbtCompound animations;
+	public static final Identifier ID = new Identifier(ObscureAPI.MODID, "animation_message_packet");
 
-	public AnimationMessagePacket(NbtCompound animations, int entity) {
-		this.entity = entity;
-		this.animations = animations;
+
+	public static void send(PlayerEntity player, NbtCompound animations, int entity) {
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+
+		buf.writeNbt(animations);
+		buf.writeInt(entity);
+
+		ServerPlayNetworking.send((ServerPlayerEntity) player, ID, buf);
 	}
 
-	public AnimationMessagePacket(FriendlyByteBuf buffer) {
-		this.animations = buffer.m_130260_();
-		this.entity = buffer.readInt();
-	}
-
-	public static void buffer(AnimationMessagePacket message, FriendlyByteBuf buffer) {
-		buffer.m_130079_(message.animations);
-		buffer.writeInt(message.entity);
-	}
-
-	public static void handler(AnimationMessagePacket message, Supplier<NetworkEvent.Context> context) {
+	public static void handle(MinecraftClient client, ClientPlayNetworkHandler network, PacketByteBuf buf, PacketSender sender) {
 		AtomicBoolean success = new AtomicBoolean(false);
-		((NetworkEvent.Context)context.get()).enqueueWork(() -> {
-			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> {
-				return () -> {
-					success.set(network.readPacket(message.entity, message.animations));
-				};
-			});
+		NbtCompound animations = buf.readNbt();
+		int entity = buf.readInt();
+		client.execute(() -> {
+			success.set(network.readPacket(entity, animations));
 		});
-		((NetworkEvent.Context)context.get()).setPacketHandled(true);
 		success.get();
-	}
-
-	@SubscribeEvent
-	public static void registerMessage(FMLCommonSetupEvent event) {
-		ObscureAPI.addNetworkMessage(AnimationMessagePacket.class, AnimationMessagePacket::buffer, AnimationMessagePacket::new, AnimationMessagePacket::handler);
 	}
 }

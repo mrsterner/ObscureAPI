@@ -12,6 +12,7 @@ loom {
 }
 
 repositories {
+	maven { url 'https://ladysnake.jfrog.io/artifactory/mods' }
 }
 
 dependencies {
@@ -21,6 +22,15 @@ dependencies {
 	modImplementation libs.quilt.loader
 
 	modImplementation libs.quilted.fabric.api
+
+	modImplementation(libs.cardinal.components.entity) {
+		exclude group: "net.fabricmc"
+		exclude group: "net.fabricmc.fabric-api"
+	}
+	modImplementation(libs.cardinal.components.base) {
+		exclude group: "net.fabricmc"
+		exclude group: "net.fabricmc.fabric-api"
+	}
 }
 
 processResources {
