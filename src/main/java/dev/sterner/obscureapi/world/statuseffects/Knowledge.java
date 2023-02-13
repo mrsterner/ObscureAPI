@@ -1,15 +1,21 @@
 package dev.sterner.obscureapi.world.statuseffects;
 
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectType;
+import org.jetbrains.annotations.NotNull;
+
 public class Knowledge extends StatusEffect {
 	public Knowledge() {
-		super(StatusEffectCategory.BENEFICIAL, -13408513);
+		super(StatusEffectType.BENEFICIAL, -13408513);
 	}
 
-	public @NotNull String m_19481_() {
+	@Override
+	public @NotNull String getTranslationKey() {
 		return "effect.obscure_api.knowledge";
 	}
 
-	public boolean m_6584_(int duration, int amplifier) {
+	@Override
+	public boolean canApplyUpdateEffect(int duration, int amplifier) {
 		return true;
 	}
 }

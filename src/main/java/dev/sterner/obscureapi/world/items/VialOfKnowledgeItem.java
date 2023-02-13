@@ -1,5 +1,6 @@
 package dev.sterner.obscureapi.world.items;
 
+import dev.sterner.obscureapi.registry.ObscureAPIStatusEffects;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -14,7 +15,7 @@ import org.quiltmc.loader.api.minecraft.ClientOnly;
 
 public class VialOfKnowledgeItem extends Item {
 	public VialOfKnowledgeItem() {
-		super((new Item.Settings()).maxCount(4).rarity(Rarity.UNCOMMON).tab(CreativeModeTab.f_40758_).m_41489_((new FoodComponent.Builder()).hunger(0).saturationModifier(0.2F).alwaysEdible().build()));
+		super((new Item.Settings()).maxCount(4).rarity(Rarity.UNCOMMON).food((new FoodComponent.Builder()).hunger(0).saturationModifier(0.2F).alwaysEdible().build()));
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class VialOfKnowledgeItem extends Item {
 	@Override
 	public @NotNull ItemStack finishUsing(@NotNull ItemStack itemstack, @NotNull World world, @NotNull LivingEntity entity) {
 		ItemStack retval = super.finishUsing(itemstack, world, entity);
-		entity.addStatusEffect(new StatusEffectInstance((StatusEffect)ObscureAPIStatusEffects.KNOWLEDGE.get(), 2400, 0));
+		entity.addStatusEffect(new StatusEffectInstance(ObscureAPIStatusEffects.KNOWLEDGE, 2400, 0));
 		return retval;
 	}
 }

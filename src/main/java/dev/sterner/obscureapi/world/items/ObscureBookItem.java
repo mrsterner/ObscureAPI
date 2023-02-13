@@ -1,5 +1,6 @@
 package dev.sterner.obscureapi.world.items;
 
+import dev.sterner.obscureapi.mixin.RarityMixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -10,7 +11,7 @@ import net.minecraft.world.World;
 
 public class ObscureBookItem extends FoilItem {
 	public ObscureBookItem() {
-		super((new Item.Settings()).rarity(ObscureRarity.MYTHIC).tab(CreativeModeTab.f_40756_).maxCount(1));
+		super((new Item.Settings()).rarity(ObscureRarity.MYTHIC).maxCount(1));
 	}
 
 	@Override

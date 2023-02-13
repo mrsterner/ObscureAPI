@@ -1,17 +1,14 @@
 package dev.sterner.obscureapi.world.items;
 
+import dev.sterner.obscureapi.mixin.RarityMixin;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Rarity;
 
 public class ObscureRarity {
-	public static final Rarity MYTHIC;
-	public static final Rarity LEGENDARY;
+	public static final Rarity MYTHIC =  (Rarity) (Object) new RarityMixin("mythic", Formatting.RED);
+	public static final Rarity LEGENDARY =  (Rarity) (Object) new RarityMixin("legendary", Formatting.GOLD);
 
 	public ObscureRarity() {
 	}
 
-	static {
-		MYTHIC = Rarity.create("mythic", Formatting.RED);
-		LEGENDARY = Rarity.create("legendary", Formatting.GOLD);
-	}
 }

@@ -1,5 +1,7 @@
 package dev.sterner.obscureapi.api;
 
+import dev.sterner.obscureapi.registry.ObscureAPIEntityTypes;
+import dev.sterner.obscureapi.utils.EventUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -95,7 +97,7 @@ public class VFX extends Entity {
 	}
 
 	private VFX(Builder builder, World world) {
-		super((EntityType)ObscureAPIEntities.VFX.get(), world);
+		super(ObscureAPIEntityTypes.VFX, world);
 		this.action = (vfx) -> {
 		};
 		this.created = false;

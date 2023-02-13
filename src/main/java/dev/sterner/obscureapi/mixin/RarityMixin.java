@@ -1,6 +1,7 @@
 package dev.sterner.obscureapi.mixin;
 
 import dev.sterner.obscureapi.world.items.ObscureRarity;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Rarity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,12 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mixin(Rarity.class)
-public abstract class RarityMixin {
+public final class RarityMixin {
 
 	@Final
 	@Mutable
 	@Shadow(aliases = "field_8905")
 	private static Rarity[] VALUES;
+
+	public RarityMixin(String valueName, Formatting formatting) {
+		throw new AssertionError();
+	}
 
 	@Inject(method = "<clinit>", at = @At("TAIL"))
 	private static void obscureapi$addRarityEnum(CallbackInfo ci){
