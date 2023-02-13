@@ -25,20 +25,20 @@ public class TooltipBuilder {
 		}
 
 		private static void buildIcons(ItemStack stack, List<Text> list) {
-			if ((Boolean)Client.foodIcons.get() && stack.m_41720_().m_41472_()) {
+			if ((Boolean)Client.foodIcons.get() && stack.getItem().m_41472_()) {
 				TooltipBuilder.AttributeIcons.putFoodIcons(list, stack);
 			}
 
-			if ((Boolean)Client.equipmentIcons.get() && (stack.m_41720_() instanceof TieredItem || stack.m_41720_() instanceof ArmorItem) || hasTooltip(stack.m_41720_(), Type.ICONS_START) || hasTooltip(stack.m_41720_(), Type.ICONS_END)) {
+			if ((Boolean)Client.equipmentIcons.get() && (stack.getItem() instanceof TieredItem || stack.getItem() instanceof ArmorItem) || hasTooltip(stack.getItem(), Type.ICONS_START) || hasTooltip(stack.getItem(), Type.ICONS_END)) {
 				TooltipBuilder.AttributeIcons.putIcons(list, stack);
 			}
 
 		}
 
 		private static void buildClass(ItemStack stack, List<Text> list) {
-			if (ClassUtils.isClassItem(stack.m_41720_()) && !ObscureAPI.COLLECTION_MODS.containsKey("obscure_tooltips")) {
+			if (ClassUtils.isClassItem(stack.getItem()) && !ObscureAPI.COLLECTION_MODS.containsKey("obscure_tooltips")) {
 				String var10002 = Icons.STAR.get();
-				list.add(1, TextUtils.component(var10002 + "§6" + ClassUtils.getItemClass(stack.m_41720_()).getLabel(ClassUtils.getItemType(stack.m_41720_()))));
+				list.add(1, TextUtils.component(var10002 + "§6" + ClassUtils.getItemClass(stack.getItem()).getLabel(ClassUtils.getItemType(stack.getItem()))));
 			}
 
 		}
@@ -51,17 +51,17 @@ public class TooltipBuilder {
 		}
 
 		private static void buildKnowledge(Player player, ItemStack stack, List<Text> list) {
-			if (player.m_21023_((MobEffect)ObscureAPIMobEffects.KNOWLEDGE.get()) && TooltipBuilder.Knowledge.contains(stack)) {
+			if (player.m_21023_((StatusEffect)ObscureAPIStatusEffects.KNOWLEDGE.get()) && TooltipBuilder.Knowledge.contains(stack)) {
 				list.addAll(1, TextUtils.buildKnowledge(new ArrayList(), 30, TextUtils.translation(TooltipBuilder.Knowledge.get(stack))));
 			}
 
 		}
 
 		private static void expandableTooltip(Player player, ItemStack stack, List<Text> list) {
-			boolean abilities = ClassUtils.hasVisibleAbilities(stack.m_41720_());
-			boolean bonuses = ClassUtils.hasVisibleBonuses(stack.m_41720_());
+			boolean abilities = ClassUtils.hasVisibleAbilities(stack.getItem());
+			boolean bonuses = ClassUtils.hasVisibleBonuses(stack.getItem());
 			boolean perks = ItemUtils.hasPerks(stack);
-			if (abilities || bonuses || perks || hasTooltip(stack.m_41720_(), Type.EXPAND_TOP) || hasTooltip(stack.m_41720_(), Type.EXPAND_BOTTOM)) {
+			if (abilities || bonuses || perks || hasTooltip(stack.getItem(), Type.EXPAND_TOP) || hasTooltip(stack.getItem(), Type.EXPAND_BOTTOM)) {
 				if (stack.m_41793_() || ItemUtils.hasPerks(stack)) {
 					list.add(1, Text.m_237119_());
 				}
@@ -77,7 +77,7 @@ public class TooltipBuilder {
 					}
 
 					if (bonuses) {
-						buildBonuses(stack.m_41720_(), list);
+						buildBonuses(stack.getItem(), list);
 					}
 
 					putTooltip(stack, list, Type.EXPAND_TOP);
@@ -90,7 +90,7 @@ public class TooltipBuilder {
 		}
 
 		private static void buildAbilities(ItemStack stack, Player player, List<Text> list) {
-			Iterator var3 = ClassUtils.getVisibleAbilities(stack.m_41720_()).iterator();
+			Iterator var3 = ClassUtils.getVisibleAbilities(stack.getItem()).iterator();
 
 			while(var3.hasNext()) {
 				Ability ability = (Ability)var3.next();
@@ -119,8 +119,8 @@ public class TooltipBuilder {
 				while(var2.hasNext()) {
 					String perk = (String)var2.next();
 					Identifier registry = new Identifier(perk);
-					String var10002 = registry.m_135827_();
-					list.add(1, Text.m_237115_("perk." + var10002 + "." + registry.m_135815_()).m_130948_(Style.f_131099_.m_131150_(registry)));
+					String var10002 = registry.getNamespace();
+					list.add(1, Text.translatable("perk." + var10002 + "." + registry.getPath()).fillStyle(Style.f_131099_.m_131150_(registry)));
 				}
 			}
 
@@ -137,15 +137,15 @@ public class TooltipBuilder {
 		}
 
 		private static void putTooltip(ItemStack stack, List<Text> list, Tooltip.Type type) {
-			if (hasTooltip(stack.m_41720_(), type)) {
-				Method[] var3 = stack.m_41720_().getClass().getDeclaredMethods();
+			if (hasTooltip(stack.getItem(), type)) {
+				Method[] var3 = stack.getItem().getClass().getDeclaredMethods();
 				int var4 = var3.length;
 
 				for(int var5 = 0; var5 < var4; ++var5) {
 					Method method = var3[var5];
 					if (method.isAnnotationPresent(Tooltip.class) && ((Tooltip)method.getAnnotation(Tooltip.class)).type().equals(type)) {
 						try {
-							list.addAll(1, TextUtils.buildLore(new ArrayList(), ((Tooltip)method.getAnnotation(Tooltip.class)).wight(), (String)method.invoke(stack.m_41720_(), stack, Minecraft.getInstance().f_91074_), !type.equals(Type.EXPAND_TOP) && !type.equals(Type.EXPAND_BOTTOM) ? "" : Icons.STICK.get()));
+							list.addAll(1, TextUtils.buildLore(new ArrayList(), ((Tooltip)method.getAnnotation(Tooltip.class)).wight(), (String)method.invoke(stack.getItem(), stack, Minecraft.getInstance().f_91074_), !type.equals(Type.EXPAND_TOP) && !type.equals(Type.EXPAND_BOTTOM) ? "" : Icons.STICK.get()));
 						} catch (IllegalAccessException | InvocationTargetException var8) {
 							throw new RuntimeException(var8);
 						}
@@ -157,17 +157,17 @@ public class TooltipBuilder {
 
 		private static String getLine(ItemStack stack, Tooltip.Type type) {
 			StringBuilder tooltip = new StringBuilder();
-			if (!hasTooltip(stack.m_41720_(), type)) {
+			if (!hasTooltip(stack.getItem(), type)) {
 				return tooltip.toString();
 			} else {
-				Method[] var3 = stack.m_41720_().getClass().getDeclaredMethods();
+				Method[] var3 = stack.getItem().getClass().getDeclaredMethods();
 				int var4 = var3.length;
 
 				for(int var5 = 0; var5 < var4; ++var5) {
 					Method method = var3[var5];
 					if (method.isAnnotationPresent(Tooltip.class) && ((Tooltip)method.getAnnotation(Tooltip.class)).type().equals(type)) {
 						try {
-							tooltip.append((String)method.invoke(stack.m_41720_(), stack, Minecraft.getInstance().f_91074_));
+							tooltip.append((String)method.invoke(stack.getItem(), stack, Minecraft.getInstance().f_91074_));
 							tooltip.append(" ");
 						} catch (IllegalAccessException | InvocationTargetException var8) {
 							throw new RuntimeException(var8);
@@ -306,12 +306,12 @@ public class TooltipBuilder {
 
 		private static void putFoodIcons(List<Text> list, ItemStack stack) {
 			String icons = "";
-			if (((FoodProperties)Objects.requireNonNull(stack.m_41720_().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38744_() > 0) {
-				icons = icons + Icons.FOOD.get() + ((FoodProperties)Objects.requireNonNull(stack.m_41720_().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38744_() + " ";
+			if (((FoodProperties)Objects.requireNonNull(stack.getItem().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38744_() > 0) {
+				icons = icons + Icons.FOOD.get() + ((FoodProperties)Objects.requireNonNull(stack.getItem().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38744_() + " ";
 			}
 
-			if (((FoodProperties)Objects.requireNonNull(stack.m_41720_().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38745_() > 0.0F) {
-				icons = icons + Icons.FOOD_SATURATION.get() + (int)(((FoodProperties)Objects.requireNonNull(stack.m_41720_().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38745_() * 100.0F) + "% ";
+			if (((FoodProperties)Objects.requireNonNull(stack.getItem().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38745_() > 0.0F) {
+				icons = icons + Icons.FOOD_SATURATION.get() + (int)(((FoodProperties)Objects.requireNonNull(stack.getItem().getFoodProperties(stack, Minecraft.getInstance().f_91074_))).m_38745_() * 100.0F) + "% ";
 			}
 
 			if (!icons.equals("")) {
@@ -332,11 +332,11 @@ public class TooltipBuilder {
 		}
 
 		public static boolean contains(ItemStack stack) {
-			return KNOWLEDGE.containsKey(ForgeRegistries.ITEMS.getKey(stack.m_41720_()));
+			return KNOWLEDGE.containsKey(ForgeRegistries.ITEMS.getKey(stack.getItem()));
 		}
 
 		public static String get(ItemStack stack) {
-			return (String)KNOWLEDGE.get(ForgeRegistries.ITEMS.getKey(stack.m_41720_()));
+			return (String)KNOWLEDGE.get(ForgeRegistries.ITEMS.getKey(stack.getItem()));
 		}
 	}
 
@@ -351,11 +351,11 @@ public class TooltipBuilder {
 		}
 
 		public static boolean contains(ItemStack stack) {
-			return LORE.containsKey(ForgeRegistries.ITEMS.getKey(stack.m_41720_()));
+			return LORE.containsKey(ForgeRegistries.ITEMS.getKey(stack.getItem()));
 		}
 
 		public static String get(ItemStack stack) {
-			return (String)LORE.get(ForgeRegistries.ITEMS.getKey(stack.m_41720_()));
+			return (String)LORE.get(ForgeRegistries.ITEMS.getKey(stack.getItem()));
 		}
 	}
 }

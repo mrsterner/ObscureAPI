@@ -8,7 +8,7 @@ public class HekateLib {
 	public static void updateScale(Entity entity, float scale, float speed) {
 		float scaleIn = entity.getPersistentData().m_128457_("HScale");
 		entity.getPersistentData().m_128350_("HScaleLerp", scaleIn);
-		scaleIn = scale != scaleIn ? Mth.lerp(speed, scaleIn, scale) : scaleIn;
+		scaleIn = scale != scaleIn ? MathHelper.lerp(speed, scaleIn, scale) : scaleIn;
 		entity.getPersistentData().m_128350_("HScale", scaleIn);
 	}
 
@@ -134,7 +134,7 @@ public class HekateLib {
 			} else {
 				swingAngle *= 0.017453292F;
 				baseAngle *= 0.017453292F;
-				return swingAngle * Mth.m_14089_(timer * speed + offset * 6.283F) + baseAngle;
+				return swingAngle * MathHelper.cos(timer * speed + offset * 6.283F) + baseAngle;
 			}
 		}
 
@@ -161,7 +161,7 @@ public class HekateLib {
 			} else {
 				swingAngle *= 0.017453292F;
 				baseAngle *= 0.017453292F;
-				return (mod1 * swingAngle * Mth.m_14089_(timer * speed + offset * 6.283F) + baseAngle) * mod1;
+				return (mod1 * swingAngle * MathHelper.cos(timer * speed + offset * 6.283F) + baseAngle) * mod1;
 			}
 		}
 
@@ -237,7 +237,7 @@ public class HekateLib {
 		}
 
 		public static float cyclicPause(float timer, float speed, float offset) {
-			return 0.5F + Mth.m_14089_(timer * speed + offset * 6.283F) * 0.5F;
+			return 0.5F + MathHelper.cos(timer * speed + offset * 6.283F) * 0.5F;
 		}
 	}
 
@@ -272,7 +272,7 @@ public class HekateLib {
 		public static float scale(Entity entity) {
 			float scale = entity.getPersistentData().m_128457_("HScale");
 			float scaleLerp = entity.getPersistentData().m_128457_("HScaleLerp");
-			return Mth.lerp(Minecraft.getInstance().getTickDelta(), scaleLerp, scale);
+			return MathHelper.lerp(Minecraft.getInstance().getTickDelta(), scaleLerp, scale);
 		}
 	}
 
@@ -280,7 +280,7 @@ public class HekateLib {
 		public network() {
 		}
 
-		public static boolean readPacket(int id, CompoundTag animations) {
+		public static boolean readPacket(int id, NbtCompound animations) {
 			assert Minecraft.getInstance().f_91074_ != null;
 
 			Entity entity = Minecraft.getInstance().f_91074_.f_19853_.m_6815_(id);

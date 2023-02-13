@@ -101,13 +101,13 @@ public class AnimationProvider {
 		ObscureAPI.PACKET_HANDLER.send(PacketDistributor.ALL.noArg(), new AnimationMessage(this.packAnimations(), entity.m_19879_()));
 	}
 
-	private CompoundTag packAnimations() {
-		CompoundTag packet = new CompoundTag();
+	private NbtCompound packAnimations() {
+		NbtCompound packet = new NbtCompound();
 		Iterator var2 = this.animations.iterator();
 
 		while(var2.hasNext()) {
 			Animation animation = (Animation)var2.next();
-			packet.m_128405_(animation.name, animation.ticks);
+			packet.putInt(animation.name, animation.ticks);
 		}
 
 		return packet;

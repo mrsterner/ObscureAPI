@@ -12,17 +12,17 @@ public abstract class ScalableMobRenderer<T extends Mob, M extends EntityModel<T
 			boolean shouldSit = entity.m_20159_() && entity.m_20202_() != null && entity.m_20202_().shouldRiderSit();
 			this.f_115290_.f_102609_ = shouldSit;
 			this.f_115290_.f_102610_ = entity.m_6162_();
-			float f = Mth.m_14189_(arg2, entity.f_20884_, entity.f_20883_);
-			float f1 = Mth.m_14189_(arg2, entity.f_20886_, entity.f_20885_);
+			float f = MathHelper.m_14189_(arg2, entity.f_20884_, entity.f_20883_);
+			float f1 = MathHelper.m_14189_(arg2, entity.f_20886_, entity.f_20885_);
 			float f2 = f1 - f;
 			float f7;
 			if (shouldSit) {
 				Entity var12 = entity.m_20202_();
 				if (var12 instanceof LivingEntity) {
 					LivingEntity livingentity = (LivingEntity)var12;
-					f = Mth.m_14189_(arg2, livingentity.f_20884_, livingentity.f_20883_);
+					f = MathHelper.m_14189_(arg2, livingentity.f_20884_, livingentity.f_20883_);
 					f2 = f1 - f;
-					f7 = Mth.m_14177_(f2);
+					f7 = MathHelper.m_14177_(f2);
 					if (f7 < -85.0F) {
 						f7 = -85.0F;
 					}
@@ -40,7 +40,7 @@ public abstract class ScalableMobRenderer<T extends Mob, M extends EntityModel<T
 				}
 			}
 
-			float f6 = Mth.lerp(arg2, entity.f_19860_, entity.m_146909_());
+			float f6 = MathHelper.lerp(arg2, entity.f_19860_, entity.m_146909_());
 			if (m_194453_(entity)) {
 				f6 *= -1.0F;
 				f2 *= -1.0F;
@@ -63,8 +63,8 @@ public abstract class ScalableMobRenderer<T extends Mob, M extends EntityModel<T
 			pose.translate(0.0, -1.5010000467300415, 0.0);
 			float f8 = 0.0F;
 			float f5 = 0.0F;
-			if (!shouldSit && entity.m_6084_()) {
-				f8 = Mth.lerp(arg2, entity.f_20923_, entity.f_20924_);
+			if (!shouldSit && entity.isAlive()) {
+				f8 = MathHelper.lerp(arg2, entity.f_20923_, entity.f_20924_);
 				f5 = entity.f_20925_ - entity.f_20924_ * (1.0F - arg2);
 				if (entity.m_6162_()) {
 					f5 *= 3.0F;
